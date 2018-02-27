@@ -5,7 +5,9 @@
  */
 package com.sv.udb.vista;
 import com.sv.udb.controlador.EquipoCtrl;
+import com.sv.udb.modelo.ModeloEquipo;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author Estudiante
@@ -15,10 +17,25 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
     /**
      * Creates new form GUIA05_POO1_DanielBlanco
      */
+    int idEq = 0;
     public GUIA05_POO1_DanielBlanco() {
         initComponents();
+        llenarTabla();
     }
 
+    private void llenarTabla() {
+        try {
+            DefaultTableModel model = (DefaultTableModel) this.tblequipos.getModel();
+            while (model.getRowCount() > 0) {
+                model.removeRow(0);
+            } //Limpiar modelo
+            for (ModeloEquipo temp : new EquipoCtrl().obtenerTodo()) {
+                model.addRow(new Object[]{temp, temp.getDescri()});
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -41,8 +58,17 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         txtdescripcion = new javax.swing.JTextField();
         btnagregar = new javax.swing.JButton();
+        btnModiEq = new javax.swing.JButton();
+        btnLimpiar = new javax.swing.JButton();
+        btnEliminarEq = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jTabbedPane1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jTabbedPane1StateChanged(evt);
+            }
+        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -69,7 +95,7 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 177, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 210, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -100,6 +126,11 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
                 "Nombre", "Descripcion"
             }
         ));
+        tblequipos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblequiposMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(tblequipos);
 
         jLabel3.setText("Descripcion");
@@ -108,6 +139,27 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
         btnagregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnagregarActionPerformed(evt);
+            }
+        });
+
+        btnModiEq.setText("Modificar");
+        btnModiEq.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModiEqActionPerformed(evt);
+            }
+        });
+
+        btnLimpiar.setText("Limpiar");
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarActionPerformed(evt);
+            }
+        });
+
+        btnEliminarEq.setText("Eliminar");
+        btnEliminarEq.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarEqActionPerformed(evt);
             }
         });
 
@@ -128,8 +180,11 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(btnagregar)
-                                .addGap(0, 79, Short.MAX_VALUE))
-                            .addComponent(txtdescripcion))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnModiEq, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE))
+                            .addComponent(txtdescripcion)
+                            .addComponent(btnLimpiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnEliminarEq, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -148,7 +203,13 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
                             .addComponent(jLabel3)
                             .addComponent(txtdescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnagregar))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnagregar)
+                            .addComponent(btnModiEq))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnLimpiar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnEliminarEq))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -186,6 +247,7 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Equipo guardado correctamente", "POO", JOptionPane.INFORMATION_MESSAGE);
                 this.txtnombre.setText("");
                 this.txtdescripcion.setText("");
+                llenarTabla();
             }
             else
             {
@@ -197,6 +259,71 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnagregarActionPerformed
 
+    private void jTabbedPane1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedPane1StateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTabbedPane1StateChanged
+
+    private void tblequiposMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblequiposMouseClicked
+        // TODO add your handling code here:
+        int fila = this.tblequipos.getSelectedRow();
+        if (fila >= 0) {
+            ModeloEquipo obje = (ModeloEquipo) this.tblequipos.getValueAt(fila, 0);
+            idEq = obje.getCodiEqui();
+            txtnombre.setText(obje.getNombre());
+            txtdescripcion.setText(obje.getDescri());
+            
+        }
+    }//GEN-LAST:event_tblequiposMouseClicked
+
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+        // TODO add your handling code here:
+        limpiarEq();
+    }//GEN-LAST:event_btnLimpiarActionPerformed
+
+    private void btnModiEqActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModiEqActionPerformed
+        // TODO add your handling code here:
+        try {
+       
+        if(idEq != 0){
+            if(new EquipoCtrl().modificar(idEq, txtnombre.getText(),txtdescripcion.getText())){
+                JOptionPane.showMessageDialog(this, "Se modifico correctamente");
+                limpiarEq();
+                llenarTabla();
+            }else{
+                JOptionPane.showMessageDialog(this, "No se pudo modificar");
+            }
+        }else{
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado ningun equipo");
+        }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }//GEN-LAST:event_btnModiEqActionPerformed
+
+    private void btnEliminarEqActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarEqActionPerformed
+        // TODO add your handling code here:
+        if(idEq !=0){
+            int dialogResult = JOptionPane.showConfirmDialog(null, "Desea eliminar el equipo?", "Warning", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                if (new EquipoCtrl().eliminar(idEq)) {
+                    JOptionPane.showMessageDialog(this, "Se elimino correctamente");
+                    limpiarEq();
+                    llenarTabla();
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo eliminar");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado ningun equipo");
+        }
+    }//GEN-LAST:event_btnEliminarEqActionPerformed
+
+    public void limpiarEq(){
+        txtnombre.setText("");
+        txtdescripcion.setText("");
+        idEq=0;
+    }
     /**
      * @param args the command line arguments
      */
@@ -233,6 +360,9 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnEliminarEq;
+    private javax.swing.JButton btnLimpiar;
+    private javax.swing.JButton btnModiEq;
     private javax.swing.JButton btnagregar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
