@@ -5,7 +5,10 @@
  */
 package com.sv.udb.vista;
 import com.sv.udb.controlador.EquipoCtrl;
+import com.sv.udb.controlador.JugadoresCtrl;
 import com.sv.udb.modelo.ModeloEquipo;
+import com.sv.udb.modelo.ModeloJugadores;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 /**
@@ -18,9 +21,14 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
      * Creates new form GUIA05_POO1_DanielBlanco
      */
     int idEq = 0;
+    int idJu = 0;
+    EquipoCtrl equiCtrl;
     public GUIA05_POO1_DanielBlanco() {
         initComponents();
         llenarTabla();
+        llenarTablaJugadores();
+        this.equiCtrl = new EquipoCtrl();
+        cargarcomboequipos();
     }
 
     private void llenarTabla() {
@@ -31,6 +39,21 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
             } //Limpiar modelo
             for (ModeloEquipo temp : new EquipoCtrl().obtenerTodo()) {
                 model.addRow(new Object[]{temp, temp.getDescri()});
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }
+    
+    private void llenarTablaJugadores() {
+        try {
+            DefaultTableModel model = (DefaultTableModel) this.tbljugadores.getModel();
+            while (model.getRowCount() > 0) {
+                model.removeRow(0);
+            } //Limpiar modelo
+            for (ModeloJugadores temp : new JugadoresCtrl().consTodo()) {
+                model.addRow(new Object[]{temp.getCodiEqui(), temp,temp.getEdadJuga(),temp.getAltuJuga(),
+                temp.getPesoJuga()});
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
@@ -48,8 +71,20 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tbljugadores = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        cmbequipos = new javax.swing.JComboBox<>();
+        txtnombrejuga = new javax.swing.JTextField();
+        txtedadjuga = new javax.swing.JTextField();
+        txtalturajuga = new javax.swing.JTextField();
+        txtpesojuga = new javax.swing.JTextField();
+        btnagregarjuga = new javax.swing.JButton();
+        btnlimpiarjuga = new javax.swing.JButton();
+        btnmodificarjuga = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         txtnombre = new javax.swing.JTextField();
@@ -70,23 +105,54 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tbljugadores.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Campo 1", "Campo 2", "Campo 3"
+                "Equipo", "Jugador", "Edad", "Altura", "Peso"
             }
         ));
-        jScrollPane2.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(2).setHeaderValue("Campo 3");
-        }
+        tbljugadores.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbljugadoresMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(tbljugadores);
 
-        jLabel1.setText("jLabel1");
+        jLabel1.setText("Nombre");
+
+        jLabel4.setText("Altura");
+
+        jLabel5.setText("Equipo");
+
+        jLabel6.setText("Peso");
+
+        jLabel7.setText("Edad");
+
+        btnagregarjuga.setText("Guardar");
+        btnagregarjuga.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnagregarjugaActionPerformed(evt);
+            }
+        });
+
+        btnlimpiarjuga.setText("Limpiar");
+        btnlimpiarjuga.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnlimpiarjugaActionPerformed(evt);
+            }
+        });
+
+        btnmodificarjuga.setText("Modificar");
+        btnmodificarjuga.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnmodificarjugaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -94,20 +160,68 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 210, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel1)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addGap(18, 18, 18)
+                        .addComponent(cmbequipos, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addGap(23, 23, 23)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtnombrejuga, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+                            .addComponent(txtedadjuga)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel6))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtalturajuga)
+                            .addComponent(txtpesojuga)))
+                    .addComponent(btnagregarjuga, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(btnlimpiarjuga)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnmodificarjuga, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(14, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addComponent(jLabel1)
+                .addGap(10, 10, 10)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(cmbequipos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtnombrejuga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(4, 4, 4)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7)
+                    .addComponent(txtedadjuga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addComponent(txtalturajuga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtpesojuga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnagregarjuga)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnlimpiarjuga)
+                    .addComponent(btnmodificarjuga))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -248,6 +362,7 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
                 this.txtnombre.setText("");
                 this.txtdescripcion.setText("");
                 llenarTabla();
+                cargarcomboequipos();
             }
             else
             {
@@ -274,7 +389,13 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
             
         }
     }//GEN-LAST:event_tblequiposMouseClicked
-
+    public void cargarcomboequipos(){
+        DefaultComboBoxModel<ModeloEquipo> modeEqui = new DefaultComboBoxModel<>();
+        for (ModeloEquipo temp : equiCtrl.obtenerTodo()) {
+            modeEqui.addElement(temp);
+        }
+        this.cmbequipos.setModel((DefaultComboBoxModel)modeEqui);
+    }
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         // TODO add your handling code here:
         limpiarEq();
@@ -289,6 +410,7 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Se modifico correctamente");
                 limpiarEq();
                 llenarTabla();
+                cargarcomboequipos();
             }else{
                 JOptionPane.showMessageDialog(this, "No se pudo modificar");
             }
@@ -310,6 +432,7 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this, "Se elimino correctamente");
                     limpiarEq();
                     llenarTabla();
+                    cargarcomboequipos();
                 } else {
                     JOptionPane.showMessageDialog(this, "No se pudo eliminar");
                 }
@@ -318,6 +441,78 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No se ha seleccionado ningun equipo");
         }
     }//GEN-LAST:event_btnEliminarEqActionPerformed
+
+    private void btnagregarjugaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnagregarjugaActionPerformed
+        // TODO add your handling code here:
+        try
+        {
+            if (new JugadoresCtrl().guar((ModeloEquipo)cmbequipos.getSelectedItem(),txtnombrejuga.getText(),
+                    Integer.parseInt(txtedadjuga.getText()),Integer.parseInt(txtalturajuga.getText()),
+                    Integer.parseInt(txtpesojuga.getText()))) 
+            {
+                JOptionPane.showMessageDialog(this, "Jugadores guardado correctamente", "POO", JOptionPane.INFORMATION_MESSAGE);
+                limpiarjuga();
+                llenarTablaJugadores();
+                
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(this, "Error al guardar jugador, favor verifique","POO", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (Exception e) 
+        {
+            JOptionPane.showMessageDialog(this, "Error al PROCESAR","POO", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnagregarjugaActionPerformed
+    public void limpiarjuga(){
+        this.txtnombrejuga.setText("");
+        this.txtedadjuga.setText("");
+        this.txtalturajuga.setText("");
+        this.txtpesojuga.setText("");
+    }
+    private void tbljugadoresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbljugadoresMouseClicked
+        // TODO add your handling code here:
+        int fila = this.tbljugadores.getSelectedRow();
+        if (fila >= 0) {
+            ModeloJugadores obje = (ModeloJugadores) this.tbljugadores.getValueAt(fila,1);
+            idJu = obje.getCodiJuga();
+            cmbequipos.setEditable(true);
+            cmbequipos.setSelectedItem(obje.getCodiEqui());
+            cmbequipos.setEditable(false);
+            txtnombrejuga.setText(obje.getNombJuga());
+            txtedadjuga.setText(String.valueOf(obje.getEdadJuga()));
+            txtalturajuga.setText(String.valueOf(obje.getAltuJuga()));
+            txtpesojuga.setText(String.valueOf(obje.getPesoJuga()));
+            
+        }
+    }//GEN-LAST:event_tbljugadoresMouseClicked
+
+    private void btnlimpiarjugaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnlimpiarjugaActionPerformed
+        // TODO add your handling code here:
+        limpiarjuga();
+    }//GEN-LAST:event_btnlimpiarjugaActionPerformed
+
+    private void btnmodificarjugaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnmodificarjugaActionPerformed
+        // TODO add your handling code here:
+        try {
+       
+        if(idJu != 0){
+            if(new EquipoCtrl().modificar(idEq, txtnombre.getText(),txtdescripcion.getText())){
+                JOptionPane.showMessageDialog(this, "Se modifico correctamente");
+                limpiarEq();
+                llenarTabla();
+                cargarcomboequipos();
+            }else{
+                JOptionPane.showMessageDialog(this, "No se pudo modificar");
+            }
+        }else{
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado ningun equipo");
+        }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }//GEN-LAST:event_btnmodificarjugaActionPerformed
 
     public void limpiarEq(){
         txtnombre.setText("");
@@ -364,17 +559,29 @@ public class GUIA05_POO1_DanielBlanco extends javax.swing.JFrame {
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnModiEq;
     private javax.swing.JButton btnagregar;
+    private javax.swing.JButton btnagregarjuga;
+    private javax.swing.JButton btnlimpiarjuga;
+    private javax.swing.JButton btnmodificarjuga;
+    private javax.swing.JComboBox<String> cmbequipos;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable tblequipos;
+    private javax.swing.JTable tbljugadores;
+    private javax.swing.JTextField txtalturajuga;
     private javax.swing.JTextField txtdescripcion;
+    private javax.swing.JTextField txtedadjuga;
     private javax.swing.JTextField txtnombre;
+    private javax.swing.JTextField txtnombrejuga;
+    private javax.swing.JTextField txtpesojuga;
     // End of variables declaration//GEN-END:variables
 }
